@@ -25,13 +25,13 @@ class handler(BaseHTTPRequestHandler):
         self.wfile.write(response_message.encode('utf-8'))
         return
 
-    async def execute_main(self):
+    async def execute_main(self, submission_id, assignment_id, user_id):
         """
         Executes the `main` function from temp.py and returns a response message.
         """
         try:
-            # Call the main function
-            await main()
+            # Call the main function and pass the parameters
+            await main(submission_id, assignment_id, user_id)
             return "Successfully executed the main function from temp.py"
         except Exception as e:
             return f"Error occurred while executing main: {str(e)}"
