@@ -16,7 +16,7 @@ class handler(BaseHTTPRequestHandler):
         user_id = params.get('user_id', [None])[0]
 
         # Call the asynchronous main function
-        response_message = asyncio.run(self.execute_main())
+        response_message = asyncio.run(self.execute_main(submission_id, assignment_id, user_id))
 
         # Send response
         self.send_response(200)
