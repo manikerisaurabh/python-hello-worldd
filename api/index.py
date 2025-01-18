@@ -30,7 +30,7 @@ class handler(BaseHTTPRequestHandler):
         Executes the `main` function from temp.py and returns a response message.
         """
         try:
-            # Call the main function and pass the parameters
+            # Call the main function with the necessary parameters
             await main(submission_id, assignment_id, user_id)
             return "Successfully executed the main function from temp.py"
         except Exception as e:
