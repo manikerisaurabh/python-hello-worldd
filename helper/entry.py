@@ -8,13 +8,12 @@ import re
 import json
 import time
 from typing import List, Dict
-from dotenv import load_dotenv
 from openai import AsyncOpenAI
 from datetime import datetime, timezone, timedelta
 from timeline_analysis import main as timeline_analysis_main  # Import the main function from timeline_analysis.py
 
 
-load_dotenv()
+
 
 
 

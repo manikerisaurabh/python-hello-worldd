@@ -2,10 +2,7 @@ import os
 import boto3
 import shutil
 from botocore.exceptions import NoCredentialsError, ClientError
-from dotenv import load_dotenv
 
-# Load environment variables from .env file
-load_dotenv()
 
 # AWS S3 Configuration
 AWS_ACCESS_KEY = os.getenv("AWS_ACCESS_KEY_ID")

@@ -4,11 +4,10 @@ from collections import Counter
 import asyncio
 from openai import AsyncOpenAI
 
-from dotenv import load_dotenv
+
 from upload_to_S3 import main as upload_to_S3_main  # Import the function from upload.py
 
 
-load_dotenv()
 def clean_json_string(json_str):
     # Remove the ```json prefix and ``` suffix if present
     if json_str.startswith("```json\n"):
