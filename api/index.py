@@ -1,5 +1,7 @@
+import asyncio
 from http.server import BaseHTTPRequestHandler
 from urllib.parse import urlparse, parse_qs
+from helper.entry import main  # Import the main function from temp.py
 
 class handler(BaseHTTPRequestHandler):
 
@@ -13,12 +15,8 @@ class handler(BaseHTTPRequestHandler):
         assignment_id = params.get('assignment_id', [None])[0]
         user_id = params.get('user_id', [None])[0]
 
-        # Response content
-        response_message = (
-            f"Submission ID: {submission_id}\n"
-            f"Assignment ID: {assignment_id}\n"
-            f"User ID: {user_id}\n"
-        )
+        # Call the asynchronous main function
+        response_message = asyncio.run(self.execute_main())
 
         # Send response
         self.send_response(200)
@@ -26,3 +24,14 @@ class handler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(response_message.encode('utf-8'))
         return
+
+    async def execute_main(self):
+        """
+        Executes the `main` function from temp.py and returns a response message.
+        """
+        try:
+            # Call the main function
+            await main()
+            return "Successfully executed the main function from temp.py"
+        except Exception as e:
+            return f"Error occurred while executing main: {str(e)}"
