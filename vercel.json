@@ -4,9 +4,6 @@
       "source": "/", 
       "destination": "/api" 
     }
-  ],
-    "engines": {
-      "node": "20.x"
-    }
+  ]
   
 }
