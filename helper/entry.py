@@ -143,6 +143,8 @@ If the user has multiple windows open with split screen, you can return one obje
                 "analysis": analysis,
             }
 
+            
+
         except Exception as e:
             print(f"Error processing {image_file}: {str(e)}")
             return {
