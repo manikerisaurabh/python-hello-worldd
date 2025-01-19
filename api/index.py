@@ -16,12 +16,14 @@ class handler(BaseHTTPRequestHandler):
         user_id = params.get('user_id', [None])[0]
 
         # Run the asyncio event loop safely
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-        response_message = loop.run_until_complete(
-            self.execute_main(submission_id, assignment_id, user_id)
-        )
-        loop.close()
+        try:
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            response_message = loop.run_until_complete(
+                self.execute_main(submission_id, assignment_id, user_id)
+            )
+        finally:
+            loop.close()
 
         # Send response
         self.send_response(200)
