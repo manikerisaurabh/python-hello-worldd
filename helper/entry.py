@@ -63,7 +63,7 @@ def download_images_from_s3(bucket_name: str, folder_path: str, prefix:str, s3_c
     response = s3_client.list_objects_v2(Bucket=bucket_name, Prefix=prefix)
     
     if 'Contents' not in response:
-        print("No images found in the specified folder.")
+        print("Looking for images in folder:", os.path.abspath(folder_path))
         return
     
     os.makedirs(folder_path, exist_ok=True)  # Ensure the folder exists
