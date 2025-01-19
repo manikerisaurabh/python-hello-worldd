@@ -1,4 +1,4 @@
-import asyncio
+import trio
 from http.server import BaseHTTPRequestHandler
 from urllib.parse import urlparse, parse_qs
 from helper.entry import main  # Import the main function from temp.py
@@ -15,15 +15,10 @@ class handler(BaseHTTPRequestHandler):
         assignment_id = params.get('assignment_id', [None])[0]
         user_id = params.get('user_id', [None])[0]
 
-        # Run the asyncio event loop safely
-        try:
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
-            response_message = loop.run_until_complete(
-                self.execute_main(submission_id, assignment_id, user_id)
-            )
-        finally:
-            loop.close()
+        # Run the Trio event loop
+        response_message = trio.run(
+            self.execute_main, submission_id, assignment_id, user_id
+        )
 
         # Send response
         self.send_response(200)
