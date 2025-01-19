@@ -1,20 +1,14 @@
 import os
-import asyncio
-import boto3
-from time import sleep
-from datetime import datetime
+import time
 import base64
 import re
 import json
-import time
+import trio
+from datetime import datetime, timezone, timedelta
+from time import sleep
 from typing import List, Dict
 from openai import AsyncOpenAI
-from datetime import datetime, timezone, timedelta
 from helper.timeline_analysis import main as timeline_analysis_main
-
-
-
-
 
 
 def extract_and_convert_to_local(filename, offset_hours, offset_minutes):
@@ -42,12 +36,8 @@ def extract_and_convert_to_local(filename, offset_hours, offset_minutes):
         return None
 
 
-
-
-
-
 # AWS S3 Download Function
-def download_images_from_s3(bucket_name: str, folder_path: str, prefix:str, s3_client=None):
+def download_images_from_s3(bucket_name: str, folder_path: str, prefix: str, s3_client=None):
     """
     Downloads images from a specific folder in an S3 bucket to the specified local folder.
     
@@ -77,7 +67,6 @@ def download_images_from_s3(bucket_name: str, folder_path: str, prefix:str, s3_c
             print(f"Downloaded {file_name}")
 
 
-
 def encode_image(image_path: str) -> str:
     """Convert image to base64 string"""
     with open(image_path, "rb") as image_file:
@@ -98,8 +87,8 @@ async def analyze_single_image(
         client: AsyncOpenAI,
         image_path: str,
         image_file: str,
-        semaphore: asyncio.Semaphore,
-        delay = 0,
+        semaphore: trio.Semaphore,
+        delay=0,
 ) -> Dict:
     """Analyze a single image using OpenAI API with rate limiting"""
     sleep(delay)
@@ -130,7 +119,7 @@ prompt: <copy paste what user is asking the AI/Search engine to do. Only populat
 {...}
 ]
 
-If the user has multiple windows open with split screen, you can return one object for each window you see. If there's one primary window and others are in background you can skip returning details about the windows in background. Only return multiple when user is using split screen. Ignore the user webcam image overlays if any present."""
+If the user has multiple windows open with split screen, you can return one object for each window you see. If there's one primary window and others are in background you can skip returning details about the windows in background. Only return multiple when user is using split screen. Ignore the user webcam image overlays if any present."""}
                             },
                             {
                                 "type": "image_url",
@@ -147,7 +136,7 @@ If the user has multiple windows open with split screen, you can return one obje
             )
 
             analysis = response.choices[0].message.content
-            print (time_from_start, analysis)
+            print(time_from_start, analysis)
 
             return {
                 "time_from_start": time_from_start,
@@ -189,7 +178,7 @@ async def analyze_screenshots(
     images.sort()
 
     # Create semaphore for rate limiting
-    semaphore = asyncio.Semaphore(max_concurrent)
+    semaphore = trio.Semaphore(max_concurrent)
 
     # Create tasks for all images
     tasks = []
@@ -200,11 +189,11 @@ async def analyze_screenshots(
         task = analyze_single_image(client, image_path, image_file, semaphore)
         tasks.append(task)
 
-    # Process images concurrently
+    # Process images concurrently using trio
     start_time = time.time()
     print(f"Starting analysis of {len(images)} screenshots...")
 
-    results = await asyncio.gather(*tasks)
+    results = await trio.gather(*tasks)
 
     # Sort results by timestamp
     timeline = sorted(results, key=lambda x: x['time_from_start'] if x['time_from_start'] else '')
@@ -222,7 +211,6 @@ async def analyze_screenshots(
     print(f"Results saved to {results_file}")
 
     return timeline
-
 
 
 # Main entry point of the script
@@ -250,4 +238,4 @@ async def main(submission_id, assignment_id, user_id):
     await timeline_analysis_main(submission_id, assignment_id, user_id)
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    trio.run(main)
