@@ -5,9 +5,8 @@
       "destination": "/api" 
     }
   ],
-  "functions": {
-    "api/*.py": {
-      "runtime": "python3.9"
+    "engines": {
+      "node": "20.x"
     }
-  }
+  
 }
