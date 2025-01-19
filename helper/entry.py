@@ -119,7 +119,7 @@ prompt: <copy paste what user is asking the AI/Search engine to do. Only populat
 {...}
 ]
 
-If the user has multiple windows open with split screen, you can return one object for each window you see. If there's one primary window and others are in background you can skip returning details about the windows in background. Only return multiple when user is using split screen. Ignore the user webcam image overlays if any present."""}
+If the user has multiple windows open with split screen, you can return one object for each window you see. If there's one primary window and others are in background you can skip returning details about the windows in background. Only return multiple when user is using split screen. Ignore the user webcam image overlays if any present."""
                             },
                             {
                                 "type": "image_url",
